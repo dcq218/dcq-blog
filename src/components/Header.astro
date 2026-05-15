@@ -1,15 +1,22 @@
 ---
+import ThemeToggle from "./ThemeToggle.astro";
+
 const pathname = Astro.url.pathname;
 const isHome = pathname === "/";
 const isBlog = pathname.startsWith("/blog");
 const isAbout = pathname === "/about/";
+const isTags = pathname.startsWith("/tags");
 ---
 
 <header class="site-header">
   <a class="brand" href="/">DCQ</a>
-  <nav class="site-nav" aria-label="主导航">
-    <a class:list={[{ active: isHome }]} href="/">首页</a>
-    <a class:list={[{ active: isBlog }]} href="/blog/">文章</a>
-    <a class:list={[{ active: isAbout }]} href="/about/">关于</a>
-  </nav>
+  <div class="header-actions">
+    <nav class="site-nav" aria-label="主导航">
+      <a class:list={[{ active: isHome }]} href="/">首页</a>
+      <a class:list={[{ active: isBlog }]} href="/blog/">文章</a>
+      <a class:list={[{ active: isTags }]} href="/tags/">标签</a>
+      <a class:list={[{ active: isAbout }]} href="/about/">关于</a>
+    </nav>
+    <ThemeToggle />
+  </div>
 </header>

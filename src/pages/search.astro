@@ -1,0 +1,25 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SearchBox from "../components/SearchBox.astro";
+
+const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+const searchItems = posts.map((post) => ({
+  title: post.data.title,
+  description: post.data.description,
+  href: `/blog/${post.id}/`,
+  category: post.data.category,
+  tags: post.data.tags
+}));
+---
+
+<BaseLayout title="搜索 · DCQ Blog" description="搜索 DCQ Blog 的文章。">
+  <main class="page-shell narrow">
+    <p class="eyebrow">SEARCH</p>
+    <h1>搜索</h1>
+    <SearchBox items={searchItems} />
+  </main>
+</BaseLayout>

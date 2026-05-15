@@ -1,0 +1,28 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const posts = await getCollection("blog", ({ data }) => !data.draft);
+const tagCounts = posts
+  .flatMap((post) => post.data.tags)
+  .reduce((acc, tag) => acc.set(tag, (acc.get(tag) ?? 0) + 1), new Map());
+const tags = [...tagCounts.entries()].sort((a, b) => b[1] - a[1]);
+---
+
+<BaseLayout title="标签 · DCQ Blog" description="按标签浏览 DCQ Blog 的文章。">
+  <main class="page-shell">
+    <p class="eyebrow">TAGS</p>
+    <h1>标签</h1>
+
+    <section class="tag-cloud">
+      {
+        tags.map(([tag, count]) => (
+          <a class="tag-pill" href={`/tags/${encodeURIComponent(tag)}/`}>
+            #{tag}
+            <span>{count}</span>
+          </a>
+        ))
+      }
+    </section>
+  </main>
+</BaseLayout>

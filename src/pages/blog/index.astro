@@ -21,6 +21,11 @@ const categories = ["全部", ...new Set(posts.map((post) => post.data.category)
       }
     </div>
 
+    <div class="utility-row">
+      <a class="text-link" href="/search/">搜索文章</a>
+      <a class="text-link" href="/tags/">浏览标签</a>
+    </div>
+
     <section class="archive-list">
       {
         posts.map((post) => (
@@ -32,6 +37,15 @@ const categories = ["全部", ...new Set(posts.map((post) => post.data.category)
               <a href={`/blog/${post.id}/`}>{post.data.title}</a>
             </h2>
             <p>{post.data.description}</p>
+            <div class="tag-row">
+              {
+                post.data.tags.map((tag) => (
+                  <a class="mini-chip" href={`/tags/${encodeURIComponent(tag)}/`}>
+                    #{tag}
+                  </a>
+                ))
+              }
+            </div>
           </article>
         ))
       }

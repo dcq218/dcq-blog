@@ -1,0 +1,84 @@
+---
+interface SearchItem {
+  title: string;
+  description: string;
+  href: string;
+  category: string;
+  tags: string[];
+}
+
+interface Props {
+  items: SearchItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<section class="search-panel">
+  <label class="search-label" for="site-search">搜索文章</label>
+  <input
+    id="site-search"
+    class="search-input"
+    type="search"
+    placeholder="搜索标题、摘要、分类或标签"
+    autocomplete="off"
+    data-search-input
+  />
+  <p class="search-hint" data-search-hint>输入关键词后，文章会在这里实时筛选。</p>
+  <div class="search-results" data-search-results></div>
+</section>
+
+<script define:vars={{ items }} is:inline>
+  const input = document.querySelector("[data-search-input]");
+  const results = document.querySelector("[data-search-results]");
+  const hint = document.querySelector("[data-search-hint]");
+
+  const normalize = (value) => value.toLocaleLowerCase();
+  const renderResults = (matches) => {
+    if (!results) return;
+    if (!matches.length) {
+      results.innerHTML = `<p class="empty-state">没有找到匹配文章。</p>`;
+      return;
+    }
+
+    results.innerHTML = matches
+      .map(
+        (item) => `
+          <article class="search-result">
+            <p class="post-meta">${item.category}</p>
+            <h2><a href="${item.href}">${item.title}</a></h2>
+            <p>${item.description}</p>
+            <div class="tag-row">
+              ${item.tags.map((tag) => `<span class="mini-chip">#${tag}</span>`).join("")}
+            </div>
+          </article>
+        `
+      )
+      .join("");
+  };
+
+  input?.addEventListener("input", (event) => {
+    const query = normalize(event.target.value.trim());
+
+    if (!query) {
+      if (results) results.innerHTML = "";
+      if (hint) hint.hidden = false;
+      return;
+    }
+
+    if (hint) hint.hidden = true;
+
+    const matches = items.filter((item) =>
+      normalize(
+        [
+          item.title,
+          item.description,
+          item.category,
+          ...item.tags
+        ].join(" ")
+      ).includes(query)
+    );
+
+    renderResults(matches);
+  });
+</script>
