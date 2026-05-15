@@ -68,9 +68,45 @@ a {
 }
 
 .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
   font-size: 1.1rem;
   font-weight: 700;
   letter-spacing: 0.18em;
+}
+
+.brand-mark {
+  display: inline-flex;
+  width: 34px;
+  height: 34px;
+}
+
+.brand-mark svg {
+  width: 100%;
+  height: 100%;
+}
+
+.brand-mark rect {
+  fill: #111827;
+}
+
+.brand-mark path:first-of-type {
+  fill: #e5eefc;
+}
+
+.brand-mark path:last-of-type {
+  stroke: #60a5fa;
+  stroke-width: 5;
+  stroke-linecap: round;
+}
+
+:root[data-theme="dark"] .brand-mark rect {
+  fill: #e5eefc;
+}
+
+:root[data-theme="dark"] .brand-mark path:first-of-type {
+  fill: #111827;
 }
 
 .site-nav {

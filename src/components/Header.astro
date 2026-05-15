@@ -9,7 +9,16 @@ const isTags = pathname.startsWith("/tags");
 ---
 
 <header class="site-header">
-  <a class="brand" href="/">DCQ</a>
+  <a class="brand" href="/" aria-label="DCQ 首页">
+    <span class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="64" height="64" rx="18"></rect>
+        <path d="M18 18H31.5C41.7173 18 48 24.248 48 32C48 39.752 41.7173 46 31.5 46H18V18ZM27 25V39H31.25C36.706 39 40 36.331 40 32C40 27.669 36.706 25 31.25 25H27Z"></path>
+        <path d="M42.5 42.5L48 48"></path>
+      </svg>
+    </span>
+    <span>DCQ</span>
+  </a>
   <div class="header-actions">
     <nav class="site-nav" aria-label="主导航">
       <a class:list={[{ active: isHome }]} href="/">首页</a>
