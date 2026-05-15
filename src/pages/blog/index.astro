@@ -1,0 +1,40 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+const categories = ["全部", ...new Set(posts.map((post) => post.data.category))];
+---
+
+<BaseLayout title="文章 · DCQ Blog" description="DCQ Blog 的文章归档。">
+  <main class="page-shell">
+    <p class="eyebrow">ARCHIVE</p>
+    <h1>文章</h1>
+
+    <div class="filter-row" aria-label="文章分类">
+      {
+        categories.map((category, index) => (
+          <span class:list={["chip", { active: index === 0 }]}>{category}</span>
+        ))
+      }
+    </div>
+
+    <section class="archive-list">
+      {
+        posts.map((post) => (
+          <article class="archive-item">
+            <p class="post-meta">
+              {post.data.pubDate.toISOString().slice(0, 10).replaceAll("-", ".")} · {post.data.category}
+            </p>
+            <h2>
+              <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+            </h2>
+            <p>{post.data.description}</p>
+          </article>
+        ))
+      }
+    </section>
+  </main>
+</BaseLayout>

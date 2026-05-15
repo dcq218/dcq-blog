@@ -1,0 +1,83 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PostCard from "../components/PostCard.astro";
+
+const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+const latestPosts = posts.slice(0, 3);
+---
+
+<BaseLayout title="DCQ Blog">
+  <main>
+    <section class="hero">
+      <p class="eyebrow">TECHNICAL BLOG</p>
+      <h1>记录问题、方案与复盘，<br />让知识可以被再次使用。</h1>
+      <p class="hero-copy">
+        这里会整理开发笔记、系统设计、踩坑复盘与工具实践。重点不是“发过什么”，
+        而是以后遇到相似问题时，能不能更快找到一条可靠的路。
+      </p>
+      <div class="hero-actions">
+        <a class="button primary" href="/blog/">开始阅读</a>
+        <a class="button ghost" href="/about/">了解我</a>
+      </div>
+    </section>
+
+    <section class="topic-strip" aria-label="内容方向">
+      <article>
+        <p class="eyebrow">01</p>
+        <h2>开发笔记</h2>
+        <p>记录高频问题、配置方法与可复用的小结论。</p>
+      </article>
+      <article>
+        <p class="eyebrow">02</p>
+        <h2>项目复盘</h2>
+        <p>把方案选择、权衡与结果完整写下来。</p>
+      </article>
+      <article>
+        <p class="eyebrow">03</p>
+        <h2>知识整理</h2>
+        <p>把零散理解组织成之后还能检索的结构。</p>
+      </article>
+    </section>
+
+    <section class="section-block">
+      <div class="section-heading">
+        <p class="eyebrow">LATEST</p>
+        <h2>最近文章</h2>
+      </div>
+
+      <div class="post-grid">
+        {
+          latestPosts.map((post, index) => (
+            <PostCard
+              href={`/blog/${post.id}/`}
+              title={post.data.title}
+              description={post.data.description}
+              meta={`${post.data.pubDate.toISOString().slice(0, 10).replaceAll("-", ".")} · ${post.data.category}`}
+              featured={index === 0}
+            />
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="section-block split-panel">
+      <div>
+        <p class="eyebrow">WHY</p>
+        <h2>它会更像知识库，而不是时间线</h2>
+      </div>
+      <div class="body-copy">
+        <p>
+          技术博客最怕两件事：文章很多却不好找，页面很漂亮却不适合读。
+          所以这版会优先保留清晰导航、稳定层级和适合扫描的内容结构。
+        </p>
+        <p>
+          后面加标签、搜索、系列文章、项目页和代码高亮时，都会围绕同一个目标：
+          让这个站点越来越像你的“第二大脑”，而不是一堆时间线。
+        </p>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
