@@ -84,6 +84,29 @@ const articleSchema = {
   </main>
 
   <script is:inline>
+    const tocStorageKey = "dcq-toc-collapsed";
+    const articleLayout = document.querySelector(".article-layout");
+    const toc = document.querySelector("[data-toc]");
+    const tocToggle = document.querySelector("[data-toc-toggle]");
+
+    const setTocCollapsed = (collapsed) => {
+      articleLayout?.classList.toggle("toc-collapsed", collapsed);
+      toc?.classList.toggle("is-collapsed", collapsed);
+      if (tocToggle) {
+        tocToggle.textContent = collapsed ? "展开" : "收起";
+      }
+    };
+
+    if (localStorage.getItem(tocStorageKey) === "true") {
+      setTocCollapsed(true);
+    }
+
+    tocToggle?.addEventListener("click", () => {
+      const nextCollapsed = !articleLayout?.classList.contains("toc-collapsed");
+      localStorage.setItem(tocStorageKey, String(nextCollapsed));
+      setTocCollapsed(nextCollapsed);
+    });
+
     document.querySelectorAll("[data-article-body] pre").forEach((pre) => {
       const wrapper = document.createElement("div");
       wrapper.className = "code-block";
