@@ -1,26 +1,51 @@
 ---
 import { getCollection, render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import TableOfContents from "../../components/TableOfContents.astro";
+import PostPager from "../../components/PostPager.astro";
+import { estimateReadingTime } from "../../utils/reading-time";
 
 export async function getStaticPaths() {
-  const posts = await getCollection("blog", ({ data }) => !data.draft);
+  const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+  );
 
-  return posts.map((post) => ({
+  return posts.map((post, index) => ({
     params: { id: post.id },
-    props: { post }
+    props: {
+      post,
+      previousPost: posts[index + 1],
+      nextPost: posts[index - 1]
+    }
   }));
 }
 
-const { post } = Astro.props;
-const { Content } = await render(post);
+const { post, previousPost, nextPost } = Astro.props;
+const { Content, headings, remarkPluginFrontmatter } = await render(post);
+const readingTime = estimateReadingTime(post.body);
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: post.data.pubDate.toISOString(),
+  dateModified: (post.data.updatedDate ?? post.data.pubDate).toISOString(),
+  author: {
+    "@type": "Person",
+    name: "DCQ"
+  },
+  mainEntityOfPage: `${Astro.site}blog/${post.id}/`,
+  keywords: post.data.tags.join(", ")
+};
 ---
 
 <BaseLayout title={`${post.data.title} · DCQ Blog`} description={post.data.description}>
-  <main class="article-shell">
-    <article>
+  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+  <main class="article-layout">
+    <article class="article-shell">
       <header class="article-header">
         <p class="post-meta">
-          {post.data.pubDate.toISOString().slice(0, 10).replaceAll("-", ".")} · {post.data.category}
+          {post.data.pubDate.toISOString().slice(0, 10).replaceAll("-", ".")} · {post.data.category} · {readingTime} 分钟阅读
         </p>
         <h1>{post.data.title}</h1>
         <p class="article-intro">{post.data.description}</p>
@@ -35,9 +60,51 @@ const { Content } = await render(post);
         </div>
       </header>
 
-      <div class="article-body">
+      <div class="article-body" data-article-body>
         <Content />
       </div>
+
+      <PostPager
+        previous={
+          previousPost && {
+            href: `/blog/${previousPost.id}/`,
+            title: previousPost.data.title
+          }
+        }
+        next={
+          nextPost && {
+            href: `/blog/${nextPost.id}/`,
+            title: nextPost.data.title
+          }
+        }
+      />
     </article>
+
+    <TableOfContents headings={headings} />
   </main>
+
+  <script is:inline>
+    document.querySelectorAll("[data-article-body] pre").forEach((pre) => {
+      const wrapper = document.createElement("div");
+      wrapper.className = "code-block";
+      pre.parentNode?.insertBefore(wrapper, pre);
+      wrapper.appendChild(pre);
+
+      const button = document.createElement("button");
+      button.className = "copy-code";
+      button.type = "button";
+      button.textContent = "复制";
+
+      button.addEventListener("click", async () => {
+        const code = pre.querySelector("code")?.textContent ?? "";
+        await navigator.clipboard.writeText(code);
+        button.textContent = "已复制";
+        window.setTimeout(() => {
+          button.textContent = "复制";
+        }, 1400);
+      });
+
+      wrapper.appendChild(button);
+    });
+  </script>
 </BaseLayout>
