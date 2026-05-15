@@ -42,6 +42,8 @@ const articleSchema = {
 <BaseLayout title={`${post.data.title} · DCQ Blog`} description={post.data.description}>
   <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
   <main class="article-layout">
+    <TableOfContents headings={headings} />
+
     <article class="article-shell">
       <header class="article-header">
         <p class="post-meta">
@@ -81,44 +83,28 @@ const articleSchema = {
     </article>
   </main>
 
-  <TableOfContents headings={headings} />
-
   <script is:inline>
-    const tocStorageKey = "dcq-toc-open";
+    const tocStorageKey = "dcq-toc-collapsed";
     const toc = document.querySelector("[data-toc]");
     const tocToggle = document.querySelector("[data-toc-toggle]");
-    const tocClose = document.querySelector("[data-toc-close]");
-    const tocPanel = document.querySelector("[data-toc-panel]");
+    const articleLayout = document.querySelector(".article-layout");
 
-    const setTocOpen = (open) => {
-      toc?.classList.toggle("is-open", open);
+    const setTocCollapsed = (collapsed) => {
+      toc?.classList.toggle("is-collapsed", collapsed);
+      articleLayout?.classList.toggle("toc-collapsed", collapsed);
       if (tocToggle) {
-        tocToggle.setAttribute("aria-expanded", String(open));
+        tocToggle.setAttribute("aria-label", collapsed ? "展开目录" : "收起目录");
       }
     };
 
     if (localStorage.getItem(tocStorageKey) === "true") {
-      setTocOpen(true);
+      setTocCollapsed(true);
     }
 
     tocToggle?.addEventListener("click", () => {
-      const nextOpen = !toc?.classList.contains("is-open");
-      localStorage.setItem(tocStorageKey, String(nextOpen));
-      setTocOpen(nextOpen);
-    });
-
-    tocClose?.addEventListener("click", () => {
-      localStorage.setItem(tocStorageKey, "false");
-      setTocOpen(false);
-    });
-
-    tocPanel?.querySelectorAll("a").forEach((link) => {
-      link.addEventListener("click", () => {
-        if (window.innerWidth < 900) {
-          localStorage.setItem(tocStorageKey, "false");
-          setTocOpen(false);
-        }
-      });
+      const nextCollapsed = !toc?.classList.contains("is-collapsed");
+      localStorage.setItem(tocStorageKey, String(nextCollapsed));
+      setTocCollapsed(nextCollapsed);
     });
 
     document.querySelectorAll("[data-article-body] pre").forEach((pre) => {
