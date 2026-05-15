@@ -593,6 +593,30 @@ h3 {
   display: none;
 }
 
+.toc-toggle-collapsed {
+  display: none;
+}
+
+.toc.is-collapsed .toc-toggle {
+  min-width: 42px;
+  min-height: 96px;
+  padding: 12px 0;
+  border-radius: 999px;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  letter-spacing: 0.18em;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.toc.is-collapsed .toc-toggle-expanded {
+  display: none;
+}
+
+.toc.is-collapsed .toc-toggle-collapsed {
+  display: inline;
+}
+
 .toc ul {
   margin: 0;
   padding: 0;

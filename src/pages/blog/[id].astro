@@ -93,7 +93,10 @@ const articleSchema = {
       articleLayout?.classList.toggle("toc-collapsed", collapsed);
       toc?.classList.toggle("is-collapsed", collapsed);
       if (tocToggle) {
-        tocToggle.textContent = collapsed ? "展开" : "收起";
+        tocToggle.setAttribute(
+          "aria-label",
+          collapsed ? "展开目录" : "收起目录"
+        );
       }
     };
 
