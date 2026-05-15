@@ -42,8 +42,6 @@ const articleSchema = {
 <BaseLayout title={`${post.data.title} · DCQ Blog`} description={post.data.description}>
   <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
   <main class="article-layout">
-    <TableOfContents headings={headings} />
-
     <article class="article-shell">
       <header class="article-header">
         <p class="post-meta">
@@ -83,31 +81,44 @@ const articleSchema = {
     </article>
   </main>
 
+  <TableOfContents headings={headings} />
+
   <script is:inline>
-    const tocStorageKey = "dcq-toc-collapsed";
-    const articleLayout = document.querySelector(".article-layout");
+    const tocStorageKey = "dcq-toc-open";
     const toc = document.querySelector("[data-toc]");
     const tocToggle = document.querySelector("[data-toc-toggle]");
+    const tocClose = document.querySelector("[data-toc-close]");
+    const tocPanel = document.querySelector("[data-toc-panel]");
 
-    const setTocCollapsed = (collapsed) => {
-      articleLayout?.classList.toggle("toc-collapsed", collapsed);
-      toc?.classList.toggle("is-collapsed", collapsed);
+    const setTocOpen = (open) => {
+      toc?.classList.toggle("is-open", open);
       if (tocToggle) {
-        tocToggle.setAttribute(
-          "aria-label",
-          collapsed ? "展开目录" : "收起目录"
-        );
+        tocToggle.setAttribute("aria-expanded", String(open));
       }
     };
 
     if (localStorage.getItem(tocStorageKey) === "true") {
-      setTocCollapsed(true);
+      setTocOpen(true);
     }
 
     tocToggle?.addEventListener("click", () => {
-      const nextCollapsed = !articleLayout?.classList.contains("toc-collapsed");
-      localStorage.setItem(tocStorageKey, String(nextCollapsed));
-      setTocCollapsed(nextCollapsed);
+      const nextOpen = !toc?.classList.contains("is-open");
+      localStorage.setItem(tocStorageKey, String(nextOpen));
+      setTocOpen(nextOpen);
+    });
+
+    tocClose?.addEventListener("click", () => {
+      localStorage.setItem(tocStorageKey, "false");
+      setTocOpen(false);
+    });
+
+    tocPanel?.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => {
+        if (window.innerWidth < 900) {
+          localStorage.setItem(tocStorageKey, "false");
+          setTocOpen(false);
+        }
+      });
     });
 
     document.querySelectorAll("[data-article-body] pre").forEach((pre) => {

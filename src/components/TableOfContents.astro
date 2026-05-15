@@ -15,23 +15,27 @@ const visibleHeadings = headings.filter((heading) => heading.depth >= 2 && headi
 
 {
   visibleHeadings.length > 0 && (
-    <aside class="toc" data-toc>
-      <div class="toc-header">
-        <button class="toc-toggle" type="button" data-toc-toggle>
-          <span class="toc-toggle-expanded">收起</span>
-          <span class="toc-toggle-collapsed">目录</span>
-        </button>
-        <p class="eyebrow">ON THIS PAGE</p>
+    <aside class="floating-toc" data-toc>
+      <button class="toc-bookmark" type="button" data-toc-toggle aria-label="展开目录">
+        目录
+      </button>
+      <div class="toc-panel" data-toc-panel>
+        <div class="toc-panel-header">
+          <p class="eyebrow">ON THIS PAGE</p>
+          <button class="toc-close" type="button" data-toc-close aria-label="收起目录">
+            ×
+          </button>
+        </div>
+        <nav aria-label="文章目录">
+          <ul>
+            {visibleHeadings.map((heading) => (
+              <li class:list={[`depth-${heading.depth}`]}>
+                <a href={`#${heading.slug}`}>{heading.text}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </div>
-      <nav aria-label="文章目录">
-        <ul>
-          {visibleHeadings.map((heading) => (
-            <li class:list={[`depth-${heading.depth}`]}>
-              <a href={`#${heading.slug}`}>{heading.text}</a>
-            </li>
-          ))}
-        </ul>
-      </nav>
     </aside>
   )
 }
