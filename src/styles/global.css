@@ -488,7 +488,7 @@ h3 {
 
 .article-layout {
   display: grid;
-  grid-template-columns: 220px minmax(0, 820px);
+  grid-template-columns: 196px minmax(0, 820px);
   gap: 40px;
   justify-content: center;
   align-items: start;
@@ -581,6 +581,8 @@ h3 {
   max-height: calc(100vh - 120px);
   overflow-y: auto;
   padding-right: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
 }
 
 .toc ul {
@@ -604,6 +606,32 @@ h3 {
 
 .toc a:hover {
   color: var(--accent);
+}
+
+.toc a.is-active {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.toc nav:hover {
+  scrollbar-color: rgba(91, 100, 115, 0.28) transparent;
+}
+
+.toc nav::-webkit-scrollbar {
+  width: 6px;
+}
+
+.toc nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.toc nav::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 999px;
+}
+
+.toc nav:hover::-webkit-scrollbar-thumb {
+  background: rgba(91, 100, 115, 0.28);
 }
 
 .toc-toggle-collapsed {

@@ -107,6 +107,33 @@ const articleSchema = {
       setTocCollapsed(nextCollapsed);
     });
 
+    const tocLinks = [...document.querySelectorAll("[data-toc] a")];
+    const observedHeadings = tocLinks
+      .map((link) => document.getElementById(link.getAttribute("href")?.slice(1) ?? ""))
+      .filter(Boolean);
+
+    if (observedHeadings.length) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+
+            tocLinks.forEach((link) => link.classList.remove("is-active"));
+            const activeLink = tocLinks.find(
+              (link) => link.getAttribute("href") === `#${entry.target.id}`
+            );
+            activeLink?.classList.add("is-active");
+          });
+        },
+        {
+          rootMargin: "-20% 0px -65% 0px",
+          threshold: 0.1
+        }
+      );
+
+      observedHeadings.forEach((heading) => observer.observe(heading));
+    }
+
     document.querySelectorAll("[data-article-body] pre").forEach((pre) => {
       const wrapper = document.createElement("div");
       wrapper.className = "code-block";
