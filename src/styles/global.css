@@ -483,14 +483,15 @@ h3 {
 
 .article-layout {
   display: grid;
-  grid-template-columns: minmax(0, 760px) 220px;
+  grid-template-columns: 220px minmax(0, 760px);
   gap: 44px;
   align-items: start;
+  justify-content: center;
   padding: 74px 0 56px;
 }
 
 .article-layout.toc-collapsed {
-  grid-template-columns: minmax(0, 820px) 72px;
+  grid-template-columns: 72px minmax(0, 820px);
 }
 
 .article-layout.toc-collapsed .article-shell {

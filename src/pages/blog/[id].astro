@@ -42,6 +42,8 @@ const articleSchema = {
 <BaseLayout title={`${post.data.title} · DCQ Blog`} description={post.data.description}>
   <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
   <main class="article-layout">
+    <TableOfContents headings={headings} />
+
     <article class="article-shell">
       <header class="article-header">
         <p class="post-meta">
@@ -79,8 +81,6 @@ const articleSchema = {
         }
       />
     </article>
-
-    <TableOfContents headings={headings} />
   </main>
 
   <script is:inline>
