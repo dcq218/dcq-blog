@@ -514,7 +514,7 @@ h3 {
 }
 
 .article-body {
-  color: #273142;
+  color: var(--text);
   font-size: 1.08rem;
 }
 
@@ -533,6 +533,10 @@ h3 {
   border-left: 4px solid var(--accent);
   background: rgba(37, 99, 235, 0.08);
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+:root[data-theme="dark"] .article-body blockquote {
+  background: rgba(96, 165, 250, 0.1);
 }
 
 .article-body pre {
